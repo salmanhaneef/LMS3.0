@@ -1,14 +1,16 @@
 package Learning.Management.System.DB;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
 public class DbCon {
-    private java.sql.Connection connection;
+    private Connection connection;
     private Statement statement;
 
     public DbCon() {
         try {
+            // Initialize the database connection
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lms", "root", "1234SALman#");
             statement = connection.createStatement();
         } catch (Exception e) {
@@ -26,7 +28,12 @@ public class DbCon {
         }
     }
 
-    // Method to close the connection and statement to prevent resource leaks
+    // Method to get the connection (the new method added)
+    public Connection getConnection() {
+        return connection; // Returns the established connection
+    }
+
+    // Method to close resources
     public void close() {
         try {
             if (statement != null && !statement.isClosed()) {

@@ -1,5 +1,7 @@
 package Learning.Management.System.ApplicationLayer.UserManagement;
 
+import Learning.Management.System.DB.StudentDB;
+
 public class Student {
     private String name;
     private String email;
@@ -16,6 +18,8 @@ public class Student {
     public String getEmail() {
         return email;
     }
+    public String getName(){return name;}
+    public String getPassword(){return password;}
 
     // Update registerStudent to return boolean
     public boolean registerStudent(String name, String email, String password) {
@@ -23,11 +27,14 @@ public class Student {
         System.out.println("Attempting to register student:");
         System.out.println("Name: " + name + ", Email: " + email);
 
-        boolean result = true; // Return the result of the registration
+        StudentDB studentDB = new StudentDB();
+        boolean result = studentDB.addStudent(this); // Use the new StudentDB to save student
+         // Return the result of the registration
 
         // Print registration result
         System.out.println("Registration " + (result ? "successful!" : "failed."));
         return result;
+
     }
 
     public boolean loginStudent(String email, String password) {

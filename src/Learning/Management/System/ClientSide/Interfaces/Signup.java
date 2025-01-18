@@ -14,11 +14,11 @@ public class Signup extends JFrame implements ActionListener {
     JTextField textField1, textField2;
     JPasswordField passwordField3;
     JButton button1, button2, button3;
-//    StudentDB studentDB; // Declare StudentDB as an instance variable
+
 
     Signup() {
         super("Todo App");
-//        studentDB = new StudentDB();
+
 
 
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/logo2.png"));
