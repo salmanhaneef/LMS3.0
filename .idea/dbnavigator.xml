@@ -6,7 +6,7 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -17,10 +17,10 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="648f3747-b990-42d8-bf55-ec379aa8b72d">
-      <console name="Connection" type="STANDARD" schema="" session="Main" />
+      <console name="Connection" type="STANDARD" schema="lms" session="Main"><![CDATA[select * from course;]]></console>
     </connection>
     <connection id="2b07791a-7c50-4231-aac4-fb7f9bdb2b02">
-      <console name="Connection 1" type="STANDARD" schema="" session="Main" />
+      <console name="Connection 1" type="STANDARD" schema="lms" session="Main"><![CDATA[select * from students;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -28,7 +28,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
-      <object connection-id="2b07791a-7c50-4231-aac4-fb7f9bdb2b02" object-ref="schemas/lms/tables/students" />
+      <object connection-id="648f3747-b990-42d8-bf55-ec379aa8b72d" object-ref="consoles/Connection" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
@@ -630,5 +630,9 @@
         </visibility-settings>
       </environment>
     </general-settings>
+  </component>
+  <component name="DBNavigator.Project.StatementExecutionManager">
+    <execution-variables />
+    <execution-variable-types />
   </component>
 </project>

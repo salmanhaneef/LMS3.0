@@ -90,35 +90,12 @@ public class Login extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button1) { // Login attempt
+        if (e.getSource() == button1) {
             String email = textField1.getText();
-            String password = new String(passwordField2.getPassword());
-
-            // Check for admin credentials
-            if (Admin.ADMIN_EMAIL.equals(email) && Admin.ADMIN_PASSWORD.equals(password)) {
-                JOptionPane.showMessageDialog(this, "Admin login successful! Welcome!");
-                dispose(); // Close the login frame
-                new AdminDashboard(); // Open admin dashboard
-                return; // Exit the method
-            }
-
-            // Proceed to check regular user login (this part assumes implementation for normal user logins is present)
-            if (email.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "All fields are required for login.", "Login Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // Create an instance of StudentB (or regular User class) if login functionality is available.
-            Student student = new Student("", email, password); // Pass email and password for login attempt
-
-            boolean loginSuccessful = student.loginStudent(email, password);
-
-            if (loginSuccessful) {
-                JOptionPane.showMessageDialog(this, "Login successful! Welcome!");
-                dispose();
-                new Starting(); // Close the login frame (or open the main application)
+            if ("admin12@gmail.com".equals(email)) {
+                checkAdminCredentials(); // Call to method if the email is correct
             } else {
-                JOptionPane.showMessageDialog(this, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                login(); // Call to log in if the email is incorrect
             }
         } else if (e.getSource() == button2) { // Navigate to Signup
             new Signup();
@@ -127,6 +104,40 @@ public class Login extends JFrame implements ActionListener {
             new Starting();
             setVisible(false);
         }
+    }
+    public void login() {
+        // Retrieve the email and password from the text fields
+        String email = textField1.getText();
+        String password = new String(passwordField2.getPassword());
+        // Check for empty fields
+        if (email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields are required for login.", "Login Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        // Create an instance of Student for login attempt
+        Student student = new Student("", email, password); // Assuming an appropriate constructor exists
+        boolean loginSuccessful = student.loginStudent(email, password);
+        // Handle the result of the login attempt
+        if (loginSuccessful) {
+            JOptionPane.showMessageDialog(this, "Login successful! Welcome!");
+            dispose(); // Close the login frame
+            new AdminDashboard(); // Open the main application
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+        }
+        //         Check for admin credentials
+
+    }
+    public boolean checkAdminCredentials() {
+        String email = textField1.getText();
+        String password = new String(passwordField2.getPassword());
+        if (Admin.ADMIN_EMAIL.equals(email) && Admin.ADMIN_PASSWORD.equals(password)) {
+            JOptionPane.showMessageDialog(this, "Admin login successful! Welcome!");
+            dispose(); // Close the login frame
+            new AdminDashboard(); // Open the admin dashboard
+            return true; // Successful login
+        }
+        return false; // Failed login
     }
 
     public static void main(String[] args) {

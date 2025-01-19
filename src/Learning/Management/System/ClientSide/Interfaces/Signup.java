@@ -19,8 +19,6 @@ public class Signup extends JFrame implements ActionListener {
     Signup() {
         super("Todo App");
 
-
-
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/logo2.png"));
         Image i2 = i1.getImage().getScaledInstance(120, 120, Image.SCALE_DEFAULT);
         ImageIcon i3 = new ImageIcon(i2);
@@ -108,53 +106,53 @@ public class Signup extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button2) { // Register
-            String name = textField1.getText();
-            String email = textField2.getText();
-            String password = new String(passwordField3.getPassword()); // Register the student in the database
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "All fields are required for registration.", "Registration Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            if (!isValidPassword(password)) {
-                JOptionPane.showMessageDialog(this, "Password must be at least 7 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (!isValidEmail(email)) {
-                JOptionPane.showMessageDialog(this, "Invalid email address. Please enter a valid email address.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-
-
-            Student student = new Student(name, email, password);
-
-            // Attempt to register
-            boolean registrationSuccessful = student.registerStudent(name, email, password);
-
-            if (registrationSuccessful) {
-                JOptionPane.showMessageDialog(this, "Registration successful! You can now log in.");
-                textField1.setText("");
-                textField2.setText("");
-                passwordField3.setText("");
-                setVisible(false);
-                new Login();
-                // Clear the fields after successful registration
-            } else {
-                JOptionPane.showMessageDialog(this, "Registration failed. Email may already be in use.", "Registration Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-
-
-        }else if (e.getSource() == button1) {
-            setVisible(false);
-
-            new Login();   // Open Signup page
-            dispose(); // Close Login page
+            registration(); // Close Login page
         } else if (e.getSource() == button3) {
             setVisible(false);// Exit button
             new Starting();
         }
 
+    }
+    public void registration() {
+        // Retrieve input values from text fields
+        String name = textField1.getText();
+        String email = textField2.getText();
+        String password = new String(passwordField3.getPassword());
+
+        // Validate input fields
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields are required for registration.", "Registration Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!isValidPassword(password)) {
+            JOptionPane.showMessageDialog(this, "Password must be at least 7 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!isValidEmail(email)) {
+            JOptionPane.showMessageDialog(this, "Invalid email address. Please enter a valid email address.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Create a new Student instance
+        Student student = new Student(name, email, password);
+
+        // Attempt to register the student
+        boolean registrationSuccessful = student.registerStudent(name, email, password);
+
+        // Handle registration success or failure
+        if (registrationSuccessful) {
+            JOptionPane.showMessageDialog(this, "Registration successful! You can now log in.");
+            // Clear the input fields
+            textField1.setText("");
+            textField2.setText("");
+            passwordField3.setText("");
+            // Optionally hide the registration form
+            setVisible(false);
+            // Launch the login form
+            new Login();
+        } else {
+            JOptionPane.showMessageDialog(this, "Registration failed. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     private boolean isValidPassword(String password) {
         if (password.length() < 7) return false;
