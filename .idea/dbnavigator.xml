@@ -27,9 +27,7 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="648f3747-b990-42d8-bf55-ec379aa8b72d" object-ref="consoles/Connection" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="648f3747-b990-42d8-bf55-ec379aa8b72d" />
@@ -37,6 +35,8 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="2b07791a-7c50-4231-aac4-fb7f9bdb2b02" dataset="lms.students" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="648f3747-b990-42d8-bf55-ec379aa8b72d" dataset="lms.course" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="648f3747-b990-42d8-bf55-ec379aa8b72d" dataset="lms.chapter" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />

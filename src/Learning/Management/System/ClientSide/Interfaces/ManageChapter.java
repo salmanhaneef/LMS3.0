@@ -1,10 +1,14 @@
 package Learning.Management.System.ClientSide.Interfaces;
 
+import Learning.Management.System.ApplicationLayer.ContentManagement.Chapter;
+import Learning.Management.System.ApplicationLayer.ContentManagement.Course;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class ManageChapter extends JFrame implements ActionListener {
     JLabel label1;
@@ -26,7 +30,7 @@ public class ManageChapter extends JFrame implements ActionListener {
         label1.setBounds(315, 35, 200, 30);
         add(label1);
 
-        tableModel = new DefaultTableModel(new String[]{"CourseName", "ChapterName", "Description"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"CourseCode","CourseName", "ChapterName", "Description"}, 0);
         todoTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(todoTable);
         scrollPane.setBounds(20, 100, 700, 350);
@@ -51,11 +55,15 @@ public class ManageChapter extends JFrame implements ActionListener {
         setLocation(380, 200);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        refreshTable();
+        viewChapter();
 
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource()==button1){
+            addChapter();
+        }
+
 
     }
     private JButton createButton(String text, int x, int y) {
@@ -68,6 +76,88 @@ public class ManageChapter extends JFrame implements ActionListener {
         add(button);
         return button;
     }
+    public void addChapter() {
+        JPanel AddCourse = new JPanel(new GridLayout(4, 2, 5, 5));
 
-    public static void main(String[] args) {new ManageChapter();}
+        // Labels and text fields for course information
+        JLabel CourseLabel = new JLabel("Course Id:");
+        JTextField CourseField = new JTextField();
+        AddCourse.add(CourseLabel);
+        AddCourse.add(CourseField);
+        JLabel ChapterNoLabel = new JLabel("Course No:");
+        JTextField ChapterNoField = new JTextField();
+        AddCourse.add(ChapterNoLabel);
+        AddCourse.add(ChapterNoField);
+        JLabel ChapterLabel = new JLabel("Name:");
+        JTextField ChapterField = new JTextField();
+        AddCourse.add(ChapterLabel);
+        AddCourse.add(ChapterField);
+        JLabel DescriptionLabel = new JLabel("Description:");
+        JTextField DescriptionField = new JTextField();
+        AddCourse.add(DescriptionLabel);
+        AddCourse.add(DescriptionField);
+
+        // Show input dialog
+        int result = JOptionPane.showConfirmDialog(this, AddCourse, "Add New Chapter", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            // Capture user input
+            String id = CourseField.getText().trim();
+            String cid = ChapterNoField.getText().trim();
+            String course = ChapterField.getText().trim();
+            String description = DescriptionField.getText().trim();
+
+            // Validate inputs
+            if (!id.isEmpty()&&!cid.isEmpty() && !course.isEmpty() && !description.isEmpty()) {
+                // Create a new Chapter object
+                Chapter newChapter = new Chapter(cid,course, description,id,"");
+
+                // Add the chapter to the database
+                if (newChapter.addChapter(id, course, description,cid)) {
+                    JOptionPane.showMessageDialog(this, "Course added successfully.");
+                     viewChapter(); // Refresh the course list
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to add course.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "All fields must be filled out!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+
+        }
+    }
+    private void viewChapter() {
+        tableModel.setRowCount(0); // Clear existing rows in the table
+
+        try {
+            // Fetch all chapters with course details
+            List<Chapter> chapters = Chapter.showAllChapters();
+
+            // Check if there are chapters available
+            if (chapters.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No chapters available.", "Information", JOptionPane.INFORMATION_MESSAGE);
+                return; // Exit if no chapters exist
+            }
+
+            // Populate the JTable with chapter data
+            for (Chapter chapter : chapters) {
+                tableModel.addRow(new Object[]{
+                        chapter.getCourseId(),     // Course ID
+                        chapter.getCourseName(),   // Course Name
+                        chapter.getName(),         // Chapter Name
+                        chapter.getDescription()   // Chapter Description
+                });
+            }
+
+            System.out.println("Table updated with " + chapters.size() + " chapters.");
+        } catch (Exception e) {
+            // Handle exceptions gracefully
+            JOptionPane.showMessageDialog(this, "Error retrieving chapters: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        new ManageChapter();
+    }
 }

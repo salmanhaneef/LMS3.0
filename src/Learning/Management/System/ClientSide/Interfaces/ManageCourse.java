@@ -31,7 +31,7 @@ public class ManageCourse extends JFrame implements ActionListener {
         label1.setBounds(315, 35, 200, 30);
         add(label1);
 
-        tableModel = new DefaultTableModel(new String[]{"Name", "Description", "Price"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"id","Name", "Description", "Price"}, 0);
         courseTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(courseTable);
         scrollPane.setBounds(20, 100, 700, 350);
@@ -56,65 +56,17 @@ public class ManageCourse extends JFrame implements ActionListener {
         setLocation(380, 200);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        refreshTable();
+        viewCourse();
 
     }
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button1) {
-            JPanel AddChapter = new JPanel(new GridLayout(3, 2, 5, 5));
-
-            // Labels and text fields for course information
-            JLabel ChapterLabel = new JLabel("Name:");
-            JTextField ChapterField = new JTextField();
-            AddChapter.add(ChapterLabel);
-            AddChapter.add(ChapterField);
-
-            JLabel DescriptionLabel = new JLabel("Description:");
-            JTextField DescriptionField = new JTextField();
-            AddChapter.add(DescriptionLabel);
-            AddChapter.add(DescriptionField);
-
-            JLabel PriceLabel = new JLabel("Price:");
-            JTextField PriceField = new JTextField();
-            AddChapter.add(PriceLabel);
-            AddChapter.add(PriceField);
-
-            // Show input dialog
-            int result = JOptionPane.showConfirmDialog(this, AddChapter, "Add New Course", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-            if (result == JOptionPane.OK_OPTION) {
-                // Capture user input
-                String chapter = ChapterField.getText().trim();
-                String description = DescriptionField.getText().trim(); // Fixed from ChapterField to DescriptionField
-                String price = PriceField.getText().trim(); // Fixed from ChapterField to PriceField
-
-                // Validate inputs
-                if (!chapter.isEmpty() && !description.isEmpty() && !price.isEmpty()) {
-                    // Validate price is a valid decimal before creating a Course
-                    if (isValidPrice(price)) {
-                        // Create a new Course object
-                        Course newCourse = new Course(chapter, description, price);
-
-                        // Add the course to the database
-                        if (newCourse.addCourse(chapter,description,price)) {
-                            JOptionPane.showMessageDialog(this, "Course added successfully.");
-                            // Optionally refresh the table or any UI components
-                            refreshTable(); // Uncomment if this method is meant to refresh your course list
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Failed to add course.", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Price must be a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "All fields must be filled out!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
+            addCourse();
         }
 
     }
-    private void refreshTable() {
+    private void viewCourse() {
         tableModel.setRowCount(0); // Clear existing rows
 
         try {
@@ -130,6 +82,7 @@ public class ManageCourse extends JFrame implements ActionListener {
             // ✅ Add each course to the JTable
             for (Course course : courses) {
                 tableModel.addRow(new Object[]{
+                        course.getId(),
                         course.getName(),
                         course.getDescription(),
                         course.getPrice()
@@ -141,6 +94,64 @@ public class ManageCourse extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "Error retrieving courses: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    public void addCourse() {
+        JPanel AddChapter = new JPanel(new GridLayout(4, 2, 5, 5));
+
+        // Labels and text fields for course information
+
+        JLabel idLabel = new JLabel("Course Id:");
+        JTextField idField = new JTextField();
+        AddChapter.add(idLabel);
+        AddChapter.add(idField);
+
+        JLabel ChapterLabel = new JLabel("Name:");
+        JTextField ChapterField = new JTextField();
+        AddChapter.add(ChapterLabel);
+        AddChapter.add(ChapterField);
+
+        JLabel DescriptionLabel = new JLabel("Description:");
+        JTextField DescriptionField = new JTextField();
+        AddChapter.add(DescriptionLabel);
+        AddChapter.add(DescriptionField);
+
+        JLabel PriceLabel = new JLabel("Price:");
+        JTextField PriceField = new JTextField();
+        AddChapter.add(PriceLabel);
+        AddChapter.add(PriceField);
+
+        // Show input dialog
+        int result = JOptionPane.showConfirmDialog(this, AddChapter, "Add New Course", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            // Capture user input
+            String id = idField.getText().trim();
+            String chapter = ChapterField.getText().trim();
+            String description = DescriptionField.getText().trim();
+            String price = PriceField.getText().trim();
+
+            // Validate inputs
+            if (!id.isEmpty()&&!chapter.isEmpty() && !description.isEmpty() && !price.isEmpty()) {
+                // Validate price is a valid decimal
+                if (isValidPrice(price)) {
+                    // Create a new Course object
+                    Course newCourse = new Course(id,chapter, description, price);
+
+                    // Add the course to the database
+                    if (newCourse.addCourse(id,chapter, description, price)) {
+                        JOptionPane.showMessageDialog(this, "Course added successfully.");
+                        viewCourse(); // Refresh the course list
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to add course.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Price must be a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "All fields must be filled out!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
 
     private boolean isValidPrice(String price) {
         try {

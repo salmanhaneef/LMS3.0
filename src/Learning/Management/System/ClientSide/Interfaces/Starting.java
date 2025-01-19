@@ -64,7 +64,7 @@ public class Starting extends JFrame implements ActionListener {
         setLocation(380, 200);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        refreshTable();
+        viewCourse();
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -89,7 +89,7 @@ public class Starting extends JFrame implements ActionListener {
             ex.printStackTrace();
         }
     }
-    private void refreshTable() {
+    private void viewCourse() {
         tableModel.setRowCount(0); // Clear existing rows
 
         try {

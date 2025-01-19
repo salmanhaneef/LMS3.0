@@ -56,7 +56,7 @@ public class AdminDashboard extends JFrame implements ActionListener {
         setLocation(380, 200);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        refreshTable();
+        viewCourse();
 
     }
     private JButton createButton(String text, int x, int y) {
@@ -69,7 +69,7 @@ public class AdminDashboard extends JFrame implements ActionListener {
         add(button);
         return button;
     }
-    private void refreshTable() {
+    private void viewCourse() {
         tableModel.setRowCount(0); // Clear existing rows
 
         try {

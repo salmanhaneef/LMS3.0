@@ -21,12 +21,13 @@ public class CourseDB {
 
 
     public boolean addCourse(Course course) {
-        String query = "INSERT INTO course (name, description, price) VALUES (?, ?, ?)";
+        String query = "INSERT INTO course (id,name, description, price) VALUES (?,?, ?, ?)";
         try (Connection connection = dbCon.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, course.getName());
-            preparedStatement.setString(2, course.getDescription());
-            preparedStatement.setBigDecimal(3, new BigDecimal(course.getPrice()));
+            preparedStatement.setString(1,course.getId());
+            preparedStatement.setString(2, course.getName());
+            preparedStatement.setString(3, course.getDescription());
+            preparedStatement.setBigDecimal(4, new BigDecimal(course.getPrice()));
             int affectedRows = preparedStatement.executeUpdate();
             return affectedRows > 0; // Check if a row was inserted
         } catch (SQLException e) {
@@ -50,10 +51,11 @@ public class CourseDB {
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
+                String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 String price = resultSet.getString("price");
-                Course course = new Course(name, description, price);
+                Course course = new Course(id,name, description, price);
                 courseList.add(course);
             }
         } catch (SQLException e) {
