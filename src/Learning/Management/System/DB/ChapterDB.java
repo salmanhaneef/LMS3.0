@@ -42,6 +42,7 @@ public class ChapterDB {
         String query = "SELECT c.id AS course_id, c.name AS course_name, ch.id AS chapter_id, ch.name AS chapter_name, ch.description " +
                 "FROM Course c " +
                 "LEFT JOIN Chapter ch ON c.id = ch.course_id";
+        //
 
         try (Connection connection = dbCon.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
