@@ -113,7 +113,7 @@ public class ManageChapter extends JFrame implements ActionListener {
                 Chapter newChapter = new Chapter(cid,course, description,id,"");
 
                 // Add the chapter to the database
-                if (newChapter.addChapter(id, course, description,cid)) {
+                if (newChapter.addChapter(cid, course, description,id)) {
                     JOptionPane.showMessageDialog(this, "Course added successfully.");
                      viewChapter(); // Refresh the course list
                 } else {

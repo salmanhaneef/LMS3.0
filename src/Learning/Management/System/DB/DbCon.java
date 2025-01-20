@@ -2,9 +2,10 @@ package Learning.Management.System.DB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DbCon {
+public class DbCon implements AutoCloseable {  // Implement AutoCloseable
     private Connection connection;
     private Statement statement;
 
@@ -13,8 +14,9 @@ public class DbCon {
             // Initialize the database connection
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lms", "root", "1234SALman#");
             statement = connection.createStatement();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException("Failed to establish connection to the database.");
         }
     }
 
@@ -22,19 +24,20 @@ public class DbCon {
     public boolean isConnectionEstablished() {
         try {
             return connection != null && !connection.isClosed();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    // Method to get the connection (the new method added)
+    // Method to get the connection
     public Connection getConnection() {
         return connection; // Returns the established connection
     }
 
     // Method to close resources
-    public void close() {
+    @Override
+    public void close() { // Override close to implement AutoCloseable
         try {
             if (statement != null && !statement.isClosed()) {
                 statement.close();
@@ -42,7 +45,7 @@ public class DbCon {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
