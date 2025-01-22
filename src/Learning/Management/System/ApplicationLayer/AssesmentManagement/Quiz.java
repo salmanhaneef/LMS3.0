@@ -55,6 +55,7 @@ public class Quiz {
             return false; // Return false if insertion fails
         }
     }
+    //
     public static List<Quiz> showAllQuiz() {
         List<Quiz> quizList = new ArrayList<>();
         String query = "SELECT q.id AS quiz_id, q.title AS quiz_title, q.totalMarks, " +
