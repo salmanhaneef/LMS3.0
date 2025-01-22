@@ -17,7 +17,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="648f3747-b990-42d8-bf55-ec379aa8b72d">
-      <console name="Connection" type="STANDARD" schema="lms" session="Main"><![CDATA[select * from Assignment;]]></console>
+      <console name="Connection" type="STANDARD" schema="lms" session="Main"><![CDATA[select * from questionanswer;]]></console>
     </connection>
     <connection id="2b07791a-7c50-4231-aac4-fb7f9bdb2b02">
       <console name="Connection 1" type="STANDARD" schema="lms" session="Main"><![CDATA[select * from students;]]></console>

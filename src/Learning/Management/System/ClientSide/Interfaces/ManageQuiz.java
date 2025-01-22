@@ -75,26 +75,26 @@ public class ManageQuiz extends JFrame implements ActionListener {
         AddCourse.add(CourseLabel);
         AddCourse.add(ChapterField);
         JLabel ChapterNoLabel = new JLabel("Quiz No:");
-        JTextField AssignmentNoField = new JTextField();
+        JTextField QuizNoField = new JTextField();
         AddCourse.add(ChapterNoLabel);
-        AddCourse.add(AssignmentNoField);
+        AddCourse.add(QuizNoField);
         JLabel ChapterLabel = new JLabel("Title:");
-        JTextField AssignmentField = new JTextField();
+        JTextField TitleField = new JTextField();
         AddCourse.add(ChapterLabel);
-        AddCourse.add(AssignmentField);
+        AddCourse.add(TitleField);
         JLabel MarksLabel = new JLabel("Total Marks :");
         JTextField MarksField = new JTextField();
         AddCourse.add(MarksLabel);
         AddCourse.add(MarksField);
 
         // Show input dialog
-        int result = JOptionPane.showConfirmDialog(this, AddCourse, "Add New Assignment", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(this, AddCourse, "Add New Q/A", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
             // Capture user input
             String cid = ChapterField.getText().trim();
-            String qid = AssignmentNoField.getText().trim();
-            String title = AssignmentField.getText().trim();
+            String qid = QuizNoField.getText().trim();
+            String title = TitleField.getText().trim();
             String Marks = MarksField.getText().trim();
 
             // Validate inputs

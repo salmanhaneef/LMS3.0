@@ -1,30 +1,70 @@
 package Learning.Management.System.ApplicationLayer.AssesmentManagement;
+import Learning.Management.System.DB.DbCon;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 public class QuestionAnswer {
+    private String CourseName;
+    private String ChapterName;
+    private String AssignmentId;
+    private String QuizId;
+    private String Id;
     private String question;
     private String answer;
-    private int marks;
+    private String marks;
 
-    public QuestionAnswer(String question, String answer, int marks) {
+    public QuestionAnswer(String courseName, String chapterName, String assignmentId,String QuizId, String id,
+                          String question, String answer, String marks) {
+        this.CourseName = courseName;
+        this.ChapterName = chapterName;
+        this.AssignmentId = assignmentId;
+        this.QuizId = QuizId;
+        this.Id = id;
         this.question = question;
         this.answer = answer;
         this.marks = marks;
     }
 
-    public void updateQuestionAnswer(String question, String answer, int marks) {
-        this.question = question;
-        this.answer = answer;
-        this.marks = marks;
-    }
+    // Getter methods for all fields
+    public String getCourseName() {return CourseName;}
+    public String getChapterName() {return ChapterName;}
+    public String getAssignmentId() {return AssignmentId;}
+    public String getQuizId(){return  QuizId;}
+    public String getId() {return Id;}
+    public String getQuestion() {return question;}
+    public String getAnswer() {return answer;}
+    public String getMarks() {return marks;}
 
-    public void deleteQuestionAnswer() {
-        this.question = "";
-        this.answer = "";
-        this.marks = 0;
-    }
+    public boolean addAssignment(String id, String question, String answer, String marks, String assignmentId, String quizId) {
+        System.out.println("Attempting to add assignment:");
+        System.out.printf("ID: %s, Question: %s, Answer: %s, Marks: %s, Assignment ID: %s, Quiz ID: %s%n",
+                id, question, answer, marks, assignmentId, quizId ) ;
 
-    public void viewQuestionAnswer() {
-        System.out.println("Question: " + question + "\nAnswer: " + answer + "\nMarks: " + marks);
+        // SQL statement to insert a new entry into QuestionAnswer table
+        String query = "INSERT INTO QuestionAnswer (id, question, answer, Marks, assignment_id, Quiz_id) VALUES (?, ?, ?, ?, ?, ?)";
+
+        // Using try-with-resources to ensure the database connection is closed properly
+        try (DbCon dbCon = new DbCon(); // Create a new database connection
+             Connection connection = dbCon.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Setting parameters for the SQL query
+            preparedStatement.setString(1, id); // Set ID
+            preparedStatement.setString(2, question); // Set question
+            preparedStatement.setString(3, answer); // Set answer
+            preparedStatement.setString(4, marks); // Set marks
+            preparedStatement.setString(5, assignmentId); // Set assignment ID
+            preparedStatement.setString(6, quizId); // Set Quiz ID
+
+            // Execute the update and check if a row was inserted
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0; // Return true if a row was inserted
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false if insertion fails
+        }
     }
 }
