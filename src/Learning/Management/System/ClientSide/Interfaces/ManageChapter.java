@@ -30,7 +30,7 @@ public class ManageChapter extends JFrame implements ActionListener {
         label1.setBounds(315, 35, 200, 30);
         add(label1);
 
-        tableModel = new DefaultTableModel(new String[]{"CourseCode","CourseName", "ChapterName", "Description"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"CourseCode","CourseName","ChapterId", "ChapterName", "Description"}, 0);
         todoTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(todoTable);
         scrollPane.setBounds(20, 100, 700, 350);
@@ -84,7 +84,7 @@ public class ManageChapter extends JFrame implements ActionListener {
         JTextField CourseField = new JTextField();
         AddCourse.add(CourseLabel);
         AddCourse.add(CourseField);
-        JLabel ChapterNoLabel = new JLabel("Course No:");
+        JLabel ChapterNoLabel = new JLabel("Chapter No:");
         JTextField ChapterNoField = new JTextField();
         AddCourse.add(ChapterNoLabel);
         AddCourse.add(ChapterNoField);
@@ -143,7 +143,8 @@ public class ManageChapter extends JFrame implements ActionListener {
             for (Chapter chapter : chapters) {
                 tableModel.addRow(new Object[]{
                         chapter.getCourseId(),     // Course ID
-                        chapter.getCourseName(),   // Course Name
+                        chapter.getCourseName(),
+                        chapter.getCno(),// Course Name
                         chapter.getName(),         // Chapter Name
                         chapter.getDescription()   // Chapter Description
                 });
