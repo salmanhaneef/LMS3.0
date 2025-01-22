@@ -81,7 +81,7 @@ public class ManageAssignment extends JFrame implements ActionListener {
         JTextField AssignmentField = new JTextField();
         AddCourse.add(ChapterLabel);
         AddCourse.add(AssignmentField);
-        JLabel MarksLabel = new JLabel("Description:");
+        JLabel MarksLabel = new JLabel("Total Marks:");
         JTextField MarksField = new JTextField();
         AddCourse.add(MarksLabel);
         AddCourse.add(MarksField);
@@ -102,7 +102,7 @@ public class ManageAssignment extends JFrame implements ActionListener {
                 Assignment newAssignment = new Assignment(cid,"", "",aid,title,Marks);
 
                 // Add the chapter to the database
-                if (newAssignment.addChapter(cid, aid, title,Marks)) {
+                if (newAssignment.addAssignment(cid, aid, title,Marks)) {
                     JOptionPane.showMessageDialog(this, "Course added successfully.");
                     viewAssignment(); // Refresh the course list
                 } else {

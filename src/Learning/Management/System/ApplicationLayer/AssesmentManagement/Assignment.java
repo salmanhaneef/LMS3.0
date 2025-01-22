@@ -1,7 +1,6 @@
 package Learning.Management.System.ApplicationLayer.AssesmentManagement;
-import Learning.Management.System.ApplicationLayer.ContentManagement.Chapter;
-import Learning.Management.System.DB.DbCon;
 
+import Learning.Management.System.DB.DbCon;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,8 +32,8 @@ public class Assignment {
     public String getTitle(){return title;}
     public String getTotalMarks(){return totalMarks;}
 
-    public boolean addChapter(String cid, String aid, String title, String Marks) {
-        System.out.println("Attempting to add chapter:");
+    public boolean addAssignment(String cid, String aid, String title, String Marks) {
+        System.out.println("Attempting to add assignment:");
         System.out.printf("Chapter No: %s, AssignmentNo: %s, Title: %s, Marks: %s%n", cid, aid, title,Marks);
 
         String query = "INSERT INTO Assignment (id, title, totalMarks, chapter_id) VALUES (?, ?, ?, ?)";
