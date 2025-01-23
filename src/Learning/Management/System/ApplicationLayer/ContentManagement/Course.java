@@ -15,7 +15,8 @@ public class Course {
     private String name;
     private String description;
     private String price;
-    private boolean isComplete;
+    private boolean enrollment;
+    private boolean isEnrollmentDone;
     private DbCon dbCon; // Instance variable for database connection
     private List<Chapter> chapters;
 
@@ -24,7 +25,7 @@ public class Course {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.isComplete = false;
+        this.isEnrollmentDone = isEnrollmentDone;
         this.chapters = new ArrayList<>();
         dbCon = new DbCon(); // Initialize database connection
     }
@@ -88,7 +89,7 @@ public class Course {
 
         return courseList; // Return the list of courses
     }
-
+    public boolean isEnrollmentDone() { return isEnrollmentDone; }
     public String getName() {
         return name;
     }

@@ -1,6 +1,8 @@
 package Learning.Management.System.ClientSide.Interfaces;
 
+import Learning.Management.System.ApplicationLayer.AssesmentManagement.Quiz;
 import Learning.Management.System.ApplicationLayer.ContentManagement.Course;
+import Learning.Management.System.ApplicationLayer.ContentManagement.Enrollment;
 import Learning.Management.System.ApplicationLayer.UserManagement.Student;
 
 import javax.swing.*;
@@ -29,7 +31,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
         label1.setBounds(315, 35, 200, 30);
         add(label1);
 
-        tableModel = new DefaultTableModel(new String[]{"Id","Name", "Description", "Price"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"Id","Name", "Description", "Price","Enrollment"}, 0);
         todoTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(todoTable);
         scrollPane.setBounds(20, 100, 700, 350);
@@ -52,11 +54,14 @@ public class StudentDashboard extends JFrame implements ActionListener {
         setLocation(380, 200);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        viewCourse();
+        viewEnrollCourse();
 
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource()==button2){
+            addEnrollment();
+        }
 
     }
     private JButton createButton(String text, int x, int y) {
@@ -69,30 +74,77 @@ public class StudentDashboard extends JFrame implements ActionListener {
         add(button);
         return button;
     }
-    private void viewCourse() {
+    private void addEnrollment() {
+        JPanel AddCourse = new JPanel(new GridLayout(1, 2, 5, 5));
+
+        // Labels and text fields for course information
+        JLabel CourseLabel = new JLabel("Course Id:");
+        JTextField ChapterField = new JTextField();
+        AddCourse.add(CourseLabel);
+        AddCourse.add(ChapterField);
+        int result = JOptionPane.showConfirmDialog(this, AddCourse, "Add New Q/A", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            // Capture user input
+            String cid = ChapterField.getText().trim();
+
+            // Validate inputs
+            if (!cid.isEmpty()) {
+                // Get the current student ID
+                Student currentStudent = Student.getCurrentUser();
+                if (currentStudent != null) {
+                    String studentId = currentStudent.getId(); // Get the current student's ID
+                    Enrollment enrollment =new Enrollment(cid,studentId);
+
+                    // Call the enrollStudent method
+                    if (enrollment.enrollStudent(cid, studentId)) {
+                        JOptionPane.showMessageDialog(this, "Enrollment successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        // Optionally refresh the course list or perform other actions
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to enroll in course.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "No current student logged in.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "All fields must be filled out!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    private void viewEnrollCourse() {
         tableModel.setRowCount(0); // Clear existing rows
 
         try {
-            // ✅ Fetch courses from showAllCourses() (now returns a list)
-            List<Course> courses = Course.showAllCourses();
+            // Fetch the current student
+            Student currentStudent = Student.getCurrentUser();
+            if (currentStudent != null) {
+                String studentId = currentStudent.getId();
+                Enrollment enrollment = new Enrollment(studentId,"");
 
-            // ✅ Ensure list is not empty
-            if (courses.isEmpty()) {
-                System.out.println("No courses found.");
-                return; // Exit if no courses exist
+                // Fetch enrolled courses for the current student
+                List<Course> enrolledCourses = enrollment.viewSpecificStudentEnrollment(studentId);
+
+                // Ensure the list is not empty
+                if (enrolledCourses.isEmpty()) {
+                    System.out.println("No courses found for student ID " + studentId + ".");
+                    return; // Exit if no courses exist
+                }
+
+                // Add each course to the JTable
+                for (Course course : enrolledCourses) {
+                    tableModel.addRow(new Object[]{
+                            course.getId(),
+                            course.getName(),
+                            course.getDescription(),
+                            course.getPrice(),
+                            course.isEnrollmentDone() ? "No" : "Yes" // Display enrollment status
+                    });
+                }
+
+                System.out.println("Table updated with " + enrolledCourses.size() + " courses for student ID " + studentId + ".");
+            } else {
+                JOptionPane.showMessageDialog(this, "No current student logged in.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
-            // ✅ Add each course to the JTable
-            for (Course course : courses) {
-                tableModel.addRow(new Object[]{
-                        course.getId(),
-                        course.getName(),
-                        course.getDescription(),
-                        course.getPrice()
-                });
-            }
-
-            System.out.println("Table updated with " + courses.size() + " courses.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error retrieving courses: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

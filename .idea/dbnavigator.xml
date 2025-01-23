@@ -17,7 +17,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="648f3747-b990-42d8-bf55-ec379aa8b72d">
-      <console name="Connection" type="STANDARD" schema="lms" session="Main"><![CDATA[SELECT * FROM questionanswer;]]></console>
+      <console name="Connection" type="STANDARD" schema="lms" session="Main"><![CDATA[SELECT * FROM enrollment;]]></console>
     </connection>
     <connection id="2b07791a-7c50-4231-aac4-fb7f9bdb2b02">
       <console name="Connection 1" type="STANDARD" schema="lms" session="Main"><![CDATA[select * from students;]]></console>
@@ -37,6 +37,7 @@
     <filter-actions connection-id="2b07791a-7c50-4231-aac4-fb7f9bdb2b02" dataset="lms.students" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="648f3747-b990-42d8-bf55-ec379aa8b72d" dataset="lms.course" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="648f3747-b990-42d8-bf55-ec379aa8b72d" dataset="lms.chapter" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="648f3747-b990-42d8-bf55-ec379aa8b72d" dataset="lms.enrollment" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
