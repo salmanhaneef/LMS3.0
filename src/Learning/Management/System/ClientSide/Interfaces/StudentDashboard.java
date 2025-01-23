@@ -1,5 +1,6 @@
 package Learning.Management.System.ClientSide.Interfaces;
 
+import Learning.Management.System.ApplicationLayer.ContentManagement.Course;
 import Learning.Management.System.ApplicationLayer.UserManagement.Student;
 
 import javax.swing.*;
@@ -7,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class StudentDashboard extends JFrame implements ActionListener {
     JLabel label1;
@@ -27,7 +29,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
         label1.setBounds(315, 35, 200, 30);
         add(label1);
 
-        tableModel = new DefaultTableModel(new String[]{"Name", "Description", "Price"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"Id","Name", "Description", "Price"}, 0);
         todoTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(todoTable);
         scrollPane.setBounds(20, 100, 700, 350);
@@ -50,7 +52,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
         setLocation(380, 200);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        refreshTable();
+        viewCourse();
 
     }
     @Override
@@ -66,6 +68,34 @@ public class StudentDashboard extends JFrame implements ActionListener {
         button.addActionListener(this);
         add(button);
         return button;
+    }
+    private void viewCourse() {
+        tableModel.setRowCount(0); // Clear existing rows
+
+        try {
+            // ✅ Fetch courses from showAllCourses() (now returns a list)
+            List<Course> courses = Course.showAllCourses();
+
+            // ✅ Ensure list is not empty
+            if (courses.isEmpty()) {
+                System.out.println("No courses found.");
+                return; // Exit if no courses exist
+            }
+
+            // ✅ Add each course to the JTable
+            for (Course course : courses) {
+                tableModel.addRow(new Object[]{
+                        course.getId(),
+                        course.getName(),
+                        course.getDescription(),
+                        course.getPrice()
+                });
+            }
+
+            System.out.println("Table updated with " + courses.size() + " courses.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error retrieving courses: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     public static void main(String[] args) {new StudentDashboard();}
 }

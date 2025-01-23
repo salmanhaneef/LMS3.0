@@ -2,6 +2,7 @@ package Learning.Management.System.ClientSide.Interfaces;
 
 import Learning.Management.System.ApplicationLayer.UserManagement.Admin;
 import Learning.Management.System.ApplicationLayer.UserManagement.Student;
+import Learning.Management.System.DB.DbCon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -109,14 +110,19 @@ public class Login extends JFrame implements ActionListener {
         // Retrieve the email and password from the text fields
         String email = textField1.getText();
         String password = new String(passwordField2.getPassword());
+
         // Check for empty fields
         if (email.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "All fields are required for login.", "Login Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        // Create an instance of Student for login attempt
-        Student student = new Student("", email, password); // Assuming an appropriate constructor exists
-        boolean loginSuccessful = student.loginStudent(email, password);
+
+        // Create an instance of DbCon
+        DbCon dbCon = new DbCon(); // Adjust this line based on how you create the DbCon instance
+
+        // Attempt to login with email and password
+        boolean loginSuccessful = Student.loginStudent(dbCon, email, password);
+
         // Handle the result of the login attempt
         if (loginSuccessful) {
             JOptionPane.showMessageDialog(this, "Login successful! Welcome!");
@@ -125,8 +131,6 @@ public class Login extends JFrame implements ActionListener {
         } else {
             JOptionPane.showMessageDialog(this, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
         }
-        //         Check for admin credentials
-
     }
     public boolean checkAdminCredentials() {
         String email = textField1.getText();

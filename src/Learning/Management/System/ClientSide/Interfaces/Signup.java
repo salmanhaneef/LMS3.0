@@ -134,7 +134,7 @@ public class Signup extends JFrame implements ActionListener {
         }
 
         // Create a new Student instance
-        Student student = new Student(name, email, password);
+        Student student = new Student("",name, email, password);
 
         // Attempt to register the student
         boolean registrationSuccessful = student.registerStudent(name, email, password);

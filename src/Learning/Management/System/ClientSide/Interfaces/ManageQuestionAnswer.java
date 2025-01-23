@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class ManageQuestionAnswer extends JFrame implements ActionListener {
     JLabel label1;
@@ -28,9 +29,16 @@ public class ManageQuestionAnswer extends JFrame implements ActionListener {
         label1.setBounds(350, 35, 200, 30);
         add(label1);
 
-        tableModel = new DefaultTableModel(new String[]{"CourseName", "ChapterName", "Quiz/Assignment Id","Id","Question","Answer","Marks"}, 0);
-        todoTable = new JTable(tableModel);
+        tableModel = new DefaultTableModel(new String[]{"CourseName", "ChapterName", "Quiz Id","Assignment Id","Id","Question","Answer","Marks"}, 0);
+        todoTable = new JTable(tableModel){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Disable all cell editing
+            }
+        };
+
         JScrollPane scrollPane = new JScrollPane(todoTable);
+
         scrollPane.setBounds(10, 100, 720, 350);
         add(scrollPane);
 
@@ -52,7 +60,7 @@ public class ManageQuestionAnswer extends JFrame implements ActionListener {
         setLocation(380, 200);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        refreshTable();
+        viewQA();
 
     }
     @Override
@@ -111,7 +119,7 @@ public class ManageQuestionAnswer extends JFrame implements ActionListener {
                 // Add the chapter to the database
                 if (newQA.addAssignment( QAid, question,Answer,Marks,AssignmentId,QuizId)) {
                     JOptionPane.showMessageDialog(this, "Quiz added successfully.");
-//                    viewQuiz(); // Refresh the course list
+                    viewQA();// Refresh the course list
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to add course.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -120,6 +128,33 @@ public class ManageQuestionAnswer extends JFrame implements ActionListener {
             }
 
 
+        }
+    }
+    private void viewQA() {
+        tableModel.setRowCount(0);
+
+        try {
+            List<QuestionAnswer> qaList = QuestionAnswer.showAllQA(); // Renamed from `quiz` to `quizList`
+
+            if (qaList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No quiz available.", "Information", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            for (QuestionAnswer qa : qaList) { // Using the original variable name `quiz` for the loop
+                tableModel.addRow(new Object[]{
+                        qa.getCourseName(),
+                        qa.getChapterName(),
+                        qa.getAssignmentId(),
+                        qa.getQuizId(),
+                        qa.getId(),
+                        qa.getQuestion(),
+                        qa.getAnswer(),
+                        qa.getMarks()
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error retrieving assignments: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     private JButton createButton(String text, int x, int y) {

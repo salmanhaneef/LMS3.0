@@ -8,83 +8,83 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Student {
+    private String id; // Unique identifier for each student
     private String name;
     private String email;
     private String password;
     private DbCon dbCon;
+    private static Student currentUser; // To hold the currently logged-in user
 
-    // Uncomment if needed, but for proper design, consider using a singleton or dependency injection for DB class.
-    // private static StudentDB studentDB = new StudentDB(); // Use static DB for all instances
-
-    public Student(String name, String email, String password) {
+    public Student(String id, String name, String email, String password) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password; // Note: Password should ideally be hashed for security.
         dbCon = new DbCon();
     }
 
+    public String getId() {
+        return id; // Get the student's ID
+    }
+
     public String getEmail() {
-        return email;
+        return email; // Get the student's email
     }
 
     public String getName() {
-        return name;
+        return name; // Get the student's name
     }
 
     public String getPassword() {
         return password; // For security purposes, consider not exposing the password.
     }
 
-    // Register a new student and return boolean for success or failure
-    public boolean registerStudent(String name, String email,String password) {
-        // Print statement before registration
+    public static Student getCurrentUser() {
+        return currentUser; // Returns the currently logged-in user
+    }
+
+    public boolean registerStudent(String name, String email, String password) {
         System.out.println("Attempting to register student:");
         System.out.println("Name: " + name + ", Email: " + email);
         String insertSQL = "INSERT INTO students (name, email, password) VALUES (?, ?, ?)";
         try (Connection connection = dbCon.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
 
-            // Assuming that the password has been hashed before being passed to this method
-            preparedStatement.setString(1, getName());
-            preparedStatement.setString(2, getEmail());
-            preparedStatement.setString(3, getPassword());
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, email);
+            preparedStatement.setString(3, password); // Ensure password is hashed before calling this method
 
             int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0; // return true if a student was added successfully
+            return rowsAffected > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Log the exception (consider better error handling)
-            return false; // Return false if there was an error
+            e.printStackTrace();
+            return false;
         }
-
     }
 
-    // Login student by checking if the student exists in the database
-    public boolean loginStudent(String email, String password) {
-        // Print statement before login
+    public static boolean loginStudent(DbCon dbCon, String email, String password) {
         System.out.println("Attempting to login student:");
         System.out.println("Email: " + email);
-        String selectSQL = "SELECT name, email FROM students WHERE email = ? AND password = ?"; // Ideally, consider using hashed passwords
-        Student student = null;
+        String selectSQL = "SELECT id, name, email FROM students WHERE email = ? AND password = ?"; // Use hashed password in practice
 
         try (Connection connection = dbCon.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password); // Make sure to hash the password in practice
+            preparedStatement.setString(2, password); // Ensure to hash password
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            // If a result is found, create a Student object
             if (resultSet.next()) {
-                student = new Student(resultSet.getString("name"), resultSet.getString("email"), password);
-                // Password should not be stored or returned; consider removing it from Student.
-                return true; // Return true indicating successful login
+                // Create a Student object with ID as String
+                currentUser = new Student(resultSet.getString("id"), resultSet.getString("name"), resultSet.getString("email"), password);
+                return true; // Successful login
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Log the exception (consider better error handling)
+            e.printStackTrace();
         }
 
-        return false; // Return false if login failed
+        return false; // Login failed
     }
-
 }
