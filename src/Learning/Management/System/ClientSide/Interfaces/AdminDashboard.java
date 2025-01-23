@@ -57,6 +57,7 @@ public class AdminDashboard extends JFrame implements ActionListener {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         viewCourse();
+        //
 
     }
     private JButton createButton(String text, int x, int y) {
