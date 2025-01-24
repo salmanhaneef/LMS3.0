@@ -110,7 +110,7 @@ public class ManageChapter extends JFrame implements ActionListener {
             // Validate inputs
             if (!id.isEmpty()&&!cid.isEmpty() && !course.isEmpty() && !description.isEmpty()) {
                 // Create a new Chapter object
-                Chapter newChapter = new Chapter(cid,course, description,id,"");
+                Chapter newChapter = new Chapter(cid,course, description,id,"","","");
 
                 // Add the chapter to the database
                 if (newChapter.addChapter(cid, course, description,id)) {

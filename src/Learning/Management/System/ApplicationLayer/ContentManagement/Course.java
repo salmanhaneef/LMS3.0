@@ -89,6 +89,91 @@ public class Course {
 
         return courseList; // Return the list of courses
     }
+    public void addChapter(Chapter chapter) {
+        this.chapters.add(chapter);
+        System.out.println("Added chapter: " + chapter.getName() + " to course: " + this.name);
+    }
+
+    public static Course showCourseDetails(String courseId) {
+        Course courseDetail = null;
+        String query = """  
+        SELECT   
+            c.id AS course_id,  
+            c.name AS course_name,  
+            c.description AS course_description,  
+            c.price AS course_price,  
+            c.isComplete AS course_isComplete,  
+            ch.id AS chapter_id,  
+            ch.name AS chapter_name,  
+            (SELECT COUNT(*) FROM Quiz q WHERE q.chapter_id = ch.id) AS quiz_count,  
+            (SELECT COUNT(*) FROM Assignment a WHERE a.chapter_id = ch.id) AS assignment_count,  
+            (SELECT GROUP_CONCAT(q.title SEPARATOR ', ') FROM Quiz q WHERE q.chapter_id = ch.id) AS quiz_titles,  
+            (SELECT GROUP_CONCAT(a.title SEPARATOR ', ') FROM Assignment a WHERE a.chapter_id = ch.id) AS assignment_titles  
+        FROM   
+            Course c  
+        JOIN   
+            Chapter ch ON c.id = ch.course_id  
+        WHERE   
+            c.id = ?;  
+    """;
+
+        System.out.println("Executing query to retrieve details for course ID: " + courseId);
+
+        try (DbCon dbCon = new DbCon(); // Use a new instance of database connection
+             Connection connection = dbCon.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                System.out.println("Course found: " + resultSet.getString("course_name"));
+
+                String courseName = resultSet.getString("course_name");
+                String courseDescription = resultSet.getString("course_description");
+                String coursePrice = resultSet.getString("course_price");
+                boolean courseIsComplete = resultSet.getBoolean("course_isComplete");
+
+                // Create CourseDetail object
+                courseDetail = new Course(courseId, courseName, courseDescription, coursePrice);
+
+                System.out.println("Course details: Name = " + courseName +
+                        ", Description = " + courseDescription +
+                        ", Price = " + coursePrice +
+                        ", Is Complete = " + courseIsComplete);
+
+                do {
+                    // Extract chapter details from the current row
+                    String chapterId = resultSet.getString("chapter_id");
+                    String chapterName = resultSet.getString("chapter_name");
+                    int quizCount = resultSet.getInt("quiz_count");
+                    String quizTitles = resultSet.getString("quiz_titles");
+                    int assignmentCount = resultSet.getInt("assignment_count");
+                    String assignmentTitles = resultSet.getString("assignment_titles");
+
+                    // Create a ChapterDetail object and add it to the CourseDetail
+                    Chapter chapterDetail = new Chapter(
+                            chapterId, chapterName,  quizTitles, "","" ,assignmentTitles,quizTitles);
+                    courseDetail.addChapter(chapterDetail);
+
+                    // Debugging: Print chapter details
+                    System.out.println("Chapter added: Name = " + chapterName +
+                            ", Quiz Count = " + quizCount +
+                            ", Assigned Titles = " + assignmentTitles);
+
+                } while (resultSet.next());
+            } else {
+                System.out.println("No course found with ID: " + courseId);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Exception occurred while retrieving course details for ID: " + courseId);
+            e.printStackTrace();
+        }
+
+        return courseDetail; // Return the populated CourseDetail object
+    }
+
     public boolean isEnrollmentDone() { return isEnrollmentDone; }
     public String getName() {
         return name;

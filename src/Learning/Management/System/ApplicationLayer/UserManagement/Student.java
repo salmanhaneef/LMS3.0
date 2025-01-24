@@ -87,4 +87,13 @@ public class Student {
 
         return false; // Login failed
     }
+
+    public static void logout() {
+        if (currentUser != null) {
+            System.out.println("Logging out user: " + currentUser.getName());
+            currentUser = null; // Clear the current user
+        } else {
+            System.out.println("No user is currently logged in.");
+        }
+    }
 }

@@ -16,17 +16,28 @@ public class Chapter {
     private String name;               // Chapter name
     private String description;        // Chapter description
     private boolean isComplete;        // Status if chapter is complete
-    private Assignment assignment;     // Associated Assignment
+    private Assignment assignment;
+    private String quizTitles; // Titles of the associated quizzes
+    private String assignmentTitles;
     private Quiz quiz;                 // Associated Quiz
     private String courseId;           // Associated Course ID
     private String courseName;         // Associated Course Name
 
-    public Chapter(String cno, String name, String description, String courseId, String courseName) {
+    public Chapter(String cno, String name, String description, String courseId, String courseName, String quizTitles, String assignmentTitles) {
         this.cno = cno;
         this.name = name;
         this.description = description;
         this.courseId = courseId;
         this.courseName = courseName;
+        this.quizTitles = quizTitles;
+        this.assignmentTitles = assignmentTitles;
+    }
+    public String getQuizTitles() {
+        return quizTitles; // Return quiz titles
+    }
+
+    public String getAssignmentTitles() {
+        return assignmentTitles; // Return assignment titles
     }
 
     public boolean addChapter(String cno, String name, String description, String courseId) {
@@ -70,7 +81,7 @@ public class Chapter {
                 String chapterId = resultSet.getString("chapter_id");
                 String chapterName = resultSet.getString("chapter_name");
                 String chapterDescription = resultSet.getString("description");
-                Chapter chapter = new Chapter(chapterId, chapterName, chapterDescription, courseId, courseName);
+                Chapter chapter = new Chapter(chapterId, chapterName, chapterDescription, courseId, courseName,"","");
                 chapterList.add(chapter);
 
 
@@ -120,4 +131,6 @@ public class Chapter {
     public String getCourseName() {
         return courseName; // Return course name
     }
+
+
 }

@@ -1,6 +1,7 @@
 package Learning.Management.System.ClientSide.Interfaces;
 
 import Learning.Management.System.ApplicationLayer.AssesmentManagement.Quiz;
+import Learning.Management.System.ApplicationLayer.ContentManagement.Chapter;
 import Learning.Management.System.ApplicationLayer.ContentManagement.Course;
 import Learning.Management.System.ApplicationLayer.ContentManagement.Enrollment;
 import Learning.Management.System.ApplicationLayer.UserManagement.Student;
@@ -41,6 +42,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
 
         button1 = createButton("View", 750, 310);
         button2 = createButton("Enroll", 750, 360);
+        button3 = createButton("Logout",750,260);
 
         ImageIcon ii1 = new ImageIcon(ClassLoader.getSystemResource("icons/6.jpg"));
         Image ii2 = ii1.getImage().getScaledInstance(900, 530, Image.SCALE_DEFAULT);
@@ -61,6 +63,15 @@ public class StudentDashboard extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==button2){
             addEnrollment();
+        } else if (e.getSource()==button1) {
+            courseDetail();
+        } else if (e.getSource()==button3) {
+            Student student =new Student("","","","");
+            student.logout();
+            setVisible(false);
+            new Starting();
+
+
         }
 
     }
@@ -74,6 +85,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
         add(button);
         return button;
     }
+
     private void addEnrollment() {
         JPanel AddCourse = new JPanel(new GridLayout(1, 2, 5, 5));
 
@@ -147,6 +159,31 @@ public class StudentDashboard extends JFrame implements ActionListener {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error retrieving courses: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void courseDetail() {
+        String courseId = "001"; // Get the course ID from the text field
+        Course course = Course.showCourseDetails(courseId); // Call the method to get course details
+
+        // Check if the course was found
+        if (course != null) {
+            // Print course details
+            System.out.println("Course ID: " + course.getId());
+            System.out.println("Name: " + course.getName());
+            System.out.println("Description: " + course.getDescription());
+            System.out.println("Price: " + course.getPrice());
+            System.out.println("Is Complete: " + course.isEnrollmentDone());
+
+            // Print chapter details
+            System.out.println("Chapters:");
+            for (Chapter chapter : course.getChapters()) {
+                System.out.println("  Chapter ID: " + chapter.getCno() +
+                        ", Name: " + chapter.getName() +
+                        ", Quizzes: " + (chapter.getQuizTitles() == null ? "None" : chapter.getQuizTitles()) +
+                        ", Assignments: " + (chapter.getAssignmentTitles() == null ? "None" : chapter.getAssignmentTitles()));
+            }
+        } else {
+            System.out.println("No course found with ID: " + courseId); // Print error message to the console
         }
     }
     public static void main(String[] args) {new StudentDashboard();}
