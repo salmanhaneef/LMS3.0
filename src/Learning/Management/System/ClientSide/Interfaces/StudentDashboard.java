@@ -164,7 +164,6 @@ public class StudentDashboard extends JFrame implements ActionListener {
         }
     }
     private void courseDetail() {
-        // Create a panel to collect course ID input
         JPanel addCoursePanel = new JPanel(new GridLayout(1, 2, 5, 5));
 
         JLabel courseLabel = new JLabel("Course Id:");
@@ -172,60 +171,65 @@ public class StudentDashboard extends JFrame implements ActionListener {
         addCoursePanel.add(courseLabel);
         addCoursePanel.add(courseField);
 
-        // Show input dialog for course ID
         int result = JOptionPane.showConfirmDialog(this, addCoursePanel, "Enroll Course", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        // Proceed only if the user clicks OK
         if (result == JOptionPane.OK_OPTION) {
-            String courseId = courseField.getText().trim(); // Get the course ID from the text field
-            Course course = Course.showCourseDetails(courseId); // Call the method to get course details
+            String courseId = courseField.getText().trim();
+            Course course = Course.showCourseDetails(courseId);
 
-            // Check if the course was found
             if (course != null) {
-                // Create a new JFrame to display course details
-                JFrame courseFrame = new JFrame("Course Details for ID: " + courseId);
+                JPanel courseDetailsPanel = new JPanel();
+                courseDetailsPanel.setLayout(new BoxLayout(courseDetailsPanel, BoxLayout.Y_AXIS));
 
-                courseFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                courseFrame.setSize(300, 300);
-                courseFrame.setLocation(520,330);
-                courseFrame.setLayout(new BorderLayout());
+                courseDetailsPanel.add(new JLabel("Course ID: " + course.getId()));
+                courseDetailsPanel.add(new JLabel("Name: " + course.getName()));
+                courseDetailsPanel.add(new JLabel("Description: " + course.getDescription()));
+                courseDetailsPanel.add(new JLabel("Price: " + course.getPrice()));
+                courseDetailsPanel.add(new JLabel("Course is Complete: " + course.isComplete()));
+                courseDetailsPanel.add(new JLabel(" "));
 
-                // Create a text area to display course details
-                JTextArea courseDetailsArea = new JTextArea();
-                courseDetailsArea.setEditable(false);
-                courseDetailsArea.setLineWrap(true);
-                courseDetailsArea.setWrapStyleWord(true);
-
-                // Construct the course detail string
-                StringBuilder details = new StringBuilder();
-                details.append("Course ID: ").append(course.getId()).append("\n");
-                details.append("Name: ").append(course.getName()).append("\n");
-                details.append("Description: ").append(course.getDescription()).append("\n");
-                details.append("Price: $").append(course.getPrice()).append("\n");
-                details.append("Is Enrollment Complete: ").append(course.isEnrollmentDone() ? "Yes" : "No").append("\n\n");
-                details.append("Chapters:\n");
-
-                // Print chapter details
                 for (Chapter chapter : course.getChapters()) {
-                    details.append("  Chapter ID: ").append(chapter.getCno()).append("\n");
-                    details.append("  Name: ").append(chapter.getName()).append("\n");
-                    details.append("  Quizzes: ").append(chapter.getQuizTitles() == null ? "None" : String.join(", ", chapter.getQuizTitles())).append("\n");
-                    details.append("  Assignments: ").append(chapter.getAssignmentTitles() == null ? "None" : String.join(", ", chapter.getAssignmentTitles())).append("\n\n");
+                    courseDetailsPanel.add(new JLabel("Chapter: " + chapter.getName()));
+                    courseDetailsPanel.add(new JLabel("Description: " + chapter.getDescription()));
+                    courseDetailsPanel.add(new JLabel(("Chapter is Complete: " + chapter.isComplete())));
+
+
+                    if (chapter.getDescription() != null && !chapter.getDescription().equals("null")) {
+                        for (String quiz : chapter.getDescription().split(",")) { // Assuming quizzes are comma-separated
+                            JPanel quizPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                            JButton quizButton = new JButton("Start Quiz");
+                            quizPanel.add(new JLabel("Quiz: " + quiz));
+                            quizPanel.add(quizButton);
+                            courseDetailsPanel.add(quizPanel);
+                        }
+                    } else {
+                        courseDetailsPanel.add(new JLabel("No quizzes"));
+                    }
+
+                    if (chapter.getDescription() != null && !chapter.getDescription().equals("null")) {
+                        for (String assignment : chapter.getDescription().split(",")) { // Assuming assignments are comma-separated
+                            JPanel assignmentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                            JButton assignmentButton = new JButton("Start Assignment");
+                            assignmentPanel.add(new JLabel("Assignment: " + assignment));
+                            assignmentPanel.add(assignmentButton);
+                            courseDetailsPanel.add(assignmentPanel);
+                        }
+                    } else {
+                        courseDetailsPanel.add(new JLabel("No assignments"));
+                    }
+
+                    courseDetailsPanel.add(new JLabel(" ")); // Space between chapters
                 }
 
-                // Set details to the text area and add it to the JFrame
-
-                courseDetailsArea.setText(details.toString());
-                courseFrame.add(new JScrollPane(courseDetailsArea), BorderLayout.CENTER);
-
-                // Show the course details frame
-                courseFrame.setVisible(true);
+                JOptionPane.showMessageDialog(this, courseDetailsPanel, "Course Details", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // If course not found, show a message dialog
                 JOptionPane.showMessageDialog(this, "No course found with ID: " + courseId, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
+
+
     public void paymentProcess() {
         JPanel AddCourse = new JPanel(new GridLayout(3, 2, 5, 5));
 

@@ -15,7 +15,7 @@ public class Course {
     private String name;
     private String description;
     private String price;
-    private boolean enrollment;
+    private boolean isComplete;
     private boolean isEnrollmentDone;
     private DbCon dbCon; // Instance variable for database connection
     private List<Chapter> chapters;
@@ -153,11 +153,12 @@ public class Course {
 
                     // Create a ChapterDetail object and add it to the CourseDetail
                     Chapter chapterDetail = new Chapter(
-                            chapterId, chapterName,  quizTitles, "","" ,assignmentTitles,quizTitles);
+                            chapterId, chapterName,  quizTitles, "","" ,"","");
                     courseDetail.addChapter(chapterDetail);
 
                     // Debugging: Print chapter details
                     System.out.println("Chapter added: Name = " + chapterName +
+                            ",Quiz Titles ="+ quizTitles +
                             ", Quiz Count = " + quizCount +
                             ", Assigned Titles = " + assignmentTitles);
 
@@ -189,6 +190,9 @@ public class Course {
 
     public List<Chapter> getChapters() {
         return chapters;
+    }
+    public boolean isComplete() {
+        return isComplete;
     }
 
     public String getId() {
