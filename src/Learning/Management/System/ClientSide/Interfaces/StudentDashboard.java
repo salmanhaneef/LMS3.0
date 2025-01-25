@@ -4,6 +4,7 @@ import Learning.Management.System.ApplicationLayer.AssesmentManagement.Quiz;
 import Learning.Management.System.ApplicationLayer.ContentManagement.Chapter;
 import Learning.Management.System.ApplicationLayer.ContentManagement.Course;
 import Learning.Management.System.ApplicationLayer.ContentManagement.Enrollment;
+import Learning.Management.System.ApplicationLayer.Payment_Certification.Payment;
 import Learning.Management.System.ApplicationLayer.UserManagement.Student;
 
 import javax.swing.*;
@@ -85,7 +86,6 @@ public class StudentDashboard extends JFrame implements ActionListener {
         add(button);
         return button;
     }
-
     private void addEnrollment() {
         JPanel AddCourse = new JPanel(new GridLayout(1, 2, 5, 5));
 
@@ -97,6 +97,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
         int result = JOptionPane.showConfirmDialog(this, AddCourse, "Add New Q/A", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
+            paymentProcess();
             // Capture user input
             String cid = ChapterField.getText().trim();
 
@@ -110,6 +111,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
 
                     // Call the enrollStudent method
                     if (enrollment.enrollStudent(cid, studentId)) {
+                        viewEnrollCourse();
                         JOptionPane.showMessageDialog(this, "Enrollment successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
                         // Optionally refresh the course list or perform other actions
                     } else {
@@ -162,28 +164,124 @@ public class StudentDashboard extends JFrame implements ActionListener {
         }
     }
     private void courseDetail() {
-        String courseId = "001"; // Get the course ID from the text field
-        Course course = Course.showCourseDetails(courseId); // Call the method to get course details
+        // Create a panel to collect course ID input
+        JPanel addCoursePanel = new JPanel(new GridLayout(1, 2, 5, 5));
 
-        // Check if the course was found
-        if (course != null) {
-            // Print course details
-            System.out.println("Course ID: " + course.getId());
-            System.out.println("Name: " + course.getName());
-            System.out.println("Description: " + course.getDescription());
-            System.out.println("Price: " + course.getPrice());
-            System.out.println("Is Complete: " + course.isEnrollmentDone());
+        JLabel courseLabel = new JLabel("Course Id:");
+        JTextField courseField = new JTextField();
+        addCoursePanel.add(courseLabel);
+        addCoursePanel.add(courseField);
 
-            // Print chapter details
-            System.out.println("Chapters:");
-            for (Chapter chapter : course.getChapters()) {
-                System.out.println("  Chapter ID: " + chapter.getCno() +
-                        ", Name: " + chapter.getName() +
-                        ", Quizzes: " + (chapter.getQuizTitles() == null ? "None" : chapter.getQuizTitles()) +
-                        ", Assignments: " + (chapter.getAssignmentTitles() == null ? "None" : chapter.getAssignmentTitles()));
+        // Show input dialog for course ID
+        int result = JOptionPane.showConfirmDialog(this, addCoursePanel, "Enroll Course", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        // Proceed only if the user clicks OK
+        if (result == JOptionPane.OK_OPTION) {
+            String courseId = courseField.getText().trim(); // Get the course ID from the text field
+            Course course = Course.showCourseDetails(courseId); // Call the method to get course details
+
+            // Check if the course was found
+            if (course != null) {
+                // Create a new JFrame to display course details
+                JFrame courseFrame = new JFrame("Course Details for ID: " + courseId);
+
+                courseFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                courseFrame.setSize(300, 300);
+                courseFrame.setLocation(520,330);
+                courseFrame.setLayout(new BorderLayout());
+
+                // Create a text area to display course details
+                JTextArea courseDetailsArea = new JTextArea();
+                courseDetailsArea.setEditable(false);
+                courseDetailsArea.setLineWrap(true);
+                courseDetailsArea.setWrapStyleWord(true);
+
+                // Construct the course detail string
+                StringBuilder details = new StringBuilder();
+                details.append("Course ID: ").append(course.getId()).append("\n");
+                details.append("Name: ").append(course.getName()).append("\n");
+                details.append("Description: ").append(course.getDescription()).append("\n");
+                details.append("Price: $").append(course.getPrice()).append("\n");
+                details.append("Is Enrollment Complete: ").append(course.isEnrollmentDone() ? "Yes" : "No").append("\n\n");
+                details.append("Chapters:\n");
+
+                // Print chapter details
+                for (Chapter chapter : course.getChapters()) {
+                    details.append("  Chapter ID: ").append(chapter.getCno()).append("\n");
+                    details.append("  Name: ").append(chapter.getName()).append("\n");
+                    details.append("  Quizzes: ").append(chapter.getQuizTitles() == null ? "None" : String.join(", ", chapter.getQuizTitles())).append("\n");
+                    details.append("  Assignments: ").append(chapter.getAssignmentTitles() == null ? "None" : String.join(", ", chapter.getAssignmentTitles())).append("\n\n");
+                }
+
+                // Set details to the text area and add it to the JFrame
+
+                courseDetailsArea.setText(details.toString());
+                courseFrame.add(new JScrollPane(courseDetailsArea), BorderLayout.CENTER);
+
+                // Show the course details frame
+                courseFrame.setVisible(true);
+            } else {
+                // If course not found, show a message dialog
+                JOptionPane.showMessageDialog(this, "No course found with ID: " + courseId, "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            System.out.println("No course found with ID: " + courseId); // Print error message to the console
+        }
+    }
+    public void paymentProcess() {
+        JPanel AddCourse = new JPanel(new GridLayout(3, 2, 5, 5));
+
+        // Labels and text fields for course information
+        JLabel CourseLabel = new JLabel("Course Id:");
+        JTextField CourseField = new JTextField();
+        AddCourse.add(CourseLabel);
+        AddCourse.add(CourseField);
+
+        JLabel AmountLabel = new JLabel("Amount:");
+        JTextField AmountField = new JTextField();
+        AddCourse.add(AmountLabel);
+        AddCourse.add(AmountField);
+
+        JLabel PaymentMLabel = new JLabel("Payment Method:");
+        JTextField PaymentMField = new JTextField();
+        AddCourse.add(PaymentMLabel);
+        AddCourse.add(PaymentMField);
+
+        int result = JOptionPane.showConfirmDialog(this, AddCourse, "Payment Process", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String cid = CourseField.getText().trim();
+            String amountStr = AmountField.getText().trim();
+            String paymentMethod = PaymentMField.getText().trim();
+
+            if (!cid.isEmpty() && !amountStr.isEmpty() && !paymentMethod.isEmpty()) {
+                Student currentStudent = Student.getCurrentUser();
+                if (currentStudent != null) {
+                    String studentId = currentStudent.getId(); // Get the current student's ID
+
+                    // Convert amount to double
+                    double amount;
+                    try {
+                        amount = Double.parseDouble(amountStr);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(this, "Invalid amount entered.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return; // Exit the method if the amount is invalid
+                    }
+
+                    // Create a Payment object
+                    Payment payment = new Payment(studentId, cid, amount, paymentMethod);
+
+                    // Call the insertPayment method
+                    try {
+                        payment.insertPayment(studentId,cid,amount,paymentMethod); // Call the method to insert the payment
+                        JOptionPane.showMessageDialog(this, "Payment successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(this, "Failed to process payment: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "No current student logged in.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "All fields must be filled out!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     public static void main(String[] args) {new StudentDashboard();}

@@ -1,8 +1,6 @@
 package Learning.Management.System.ClientSide.Interfaces;
 
 import Learning.Management.System.ApplicationLayer.AssesmentManagement.Assignment;
-import Learning.Management.System.ApplicationLayer.ContentManagement.Chapter;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
