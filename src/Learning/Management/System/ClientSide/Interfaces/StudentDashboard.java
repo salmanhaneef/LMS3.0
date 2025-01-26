@@ -33,7 +33,7 @@ public class StudentDashboard extends JFrame implements ActionListener {
         label1.setBounds(315, 35, 200, 30);
         add(label1);
 
-        tableModel = new DefaultTableModel(new String[]{"Id","Name", "Description", "Price","Enrollment"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"Id","Name", "Description", "Price","Enrollment","Status"}, 0);
         todoTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(todoTable);
         scrollPane.setBounds(20, 100, 700, 350);
@@ -151,7 +151,9 @@ public class StudentDashboard extends JFrame implements ActionListener {
                             course.getName(),
                             course.getDescription(),
                             course.getPrice(),
-                            course.isEnrollmentDone() ? "No" : "Yes" // Display enrollment status
+                            course.isEnrollmentDone(),
+                            course.isComplete()
+                             // Display enrollment status
                     });
                 }
 
@@ -185,17 +187,19 @@ public class StudentDashboard extends JFrame implements ActionListener {
                 courseDetailsPanel.add(new JLabel("Name: " + course.getName()));
                 courseDetailsPanel.add(new JLabel("Description: " + course.getDescription()));
                 courseDetailsPanel.add(new JLabel("Price: " + course.getPrice()));
-                courseDetailsPanel.add(new JLabel("Course is Complete: " + course.isComplete()));
+                courseDetailsPanel.add(new JLabel("Course is Complete: " + (course.isComplete() ? "Yes" : "No")));
+
                 courseDetailsPanel.add(new JLabel(" "));
 
                 for (Chapter chapter : course.getChapters()) {
                     courseDetailsPanel.add(new JLabel("Chapter: " + chapter.getName()));
                     courseDetailsPanel.add(new JLabel("Description: " + chapter.getDescription()));
-                    courseDetailsPanel.add(new JLabel(("Chapter is Complete: " + chapter.isComplete())));
+                    courseDetailsPanel.add(new JLabel("Chapter is Complete: " + (chapter.isComplete() ? "Yes" : "No")));
 
 
-                    if (chapter.getDescription() != null && !chapter.getDescription().equals("null")) {
-                        for (String quiz : chapter.getDescription().split(",")) { // Assuming quizzes are comma-separated
+
+                    if (chapter.getQuizTitles() != null && !chapter.getQuizTitles().equals("null")) {
+                        for (String quiz : chapter.getQuizTitles().split(",")) { // Assuming quizzes are comma-separated
                             JPanel quizPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
                             JButton quizButton = new JButton("Start Quiz");
                             quizPanel.add(new JLabel("Quiz: " + quiz));
@@ -206,8 +210,8 @@ public class StudentDashboard extends JFrame implements ActionListener {
                         courseDetailsPanel.add(new JLabel("No quizzes"));
                     }
 
-                    if (chapter.getDescription() != null && !chapter.getDescription().equals("null")) {
-                        for (String assignment : chapter.getDescription().split(",")) { // Assuming assignments are comma-separated
+                    if (chapter.getDescription() != null && !chapter.getAssignmentTitles().equals("null")) {
+                        for (String assignment : chapter.getAssignmentTitles().split(",")) { // Assuming assignments are comma-separated
                             JPanel assignmentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
                             JButton assignmentButton = new JButton("Start Assignment");
                             assignmentPanel.add(new JLabel("Assignment: " + assignment));

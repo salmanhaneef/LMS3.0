@@ -20,12 +20,13 @@ public class Course {
     private DbCon dbCon; // Instance variable for database connection
     private List<Chapter> chapters;
 
-    public Course(String id, String name, String description, String price) {
+    public Course(String id, String name, String description, String price,boolean isComplete,boolean isEnrollmentDone) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.isEnrollmentDone = isEnrollmentDone;
+        this.isComplete = isComplete;
         this.chapters = new ArrayList<>();
         dbCon = new DbCon(); // Initialize database connection
     }
@@ -74,7 +75,9 @@ public class Course {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 String price = resultSet.getString("price");
-                Course course = new Course(id, name, description, price);
+                boolean iscompelete = false;
+                boolean isenrolled = true;
+                Course course = new Course(id, name, description, price,iscompelete,isenrolled);
                 courseList.add(course);
             }
 
@@ -104,7 +107,8 @@ public class Course {
             c.price AS course_price,  
             c.isComplete AS course_isComplete,  
             ch.id AS chapter_id,  
-            ch.name AS chapter_name,  
+            ch.name AS chapter_name,
+            ch.isComplete As chapter_isComplete,  
             (SELECT COUNT(*) FROM Quiz q WHERE q.chapter_id = ch.id) AS quiz_count,  
             (SELECT COUNT(*) FROM Assignment a WHERE a.chapter_id = ch.id) AS assignment_count,  
             (SELECT GROUP_CONCAT(q.title SEPARATOR ', ') FROM Quiz q WHERE q.chapter_id = ch.id) AS quiz_titles,  
@@ -135,7 +139,7 @@ public class Course {
                 boolean courseIsComplete = resultSet.getBoolean("course_isComplete");
 
                 // Create CourseDetail object
-                courseDetail = new Course(courseId, courseName, courseDescription, coursePrice);
+                courseDetail = new Course(courseId, courseName, courseDescription, coursePrice,courseIsComplete,courseIsComplete);
 
                 System.out.println("Course details: Name = " + courseName +
                         ", Description = " + courseDescription +
@@ -150,10 +154,11 @@ public class Course {
                     String quizTitles = resultSet.getString("quiz_titles");
                     int assignmentCount = resultSet.getInt("assignment_count");
                     String assignmentTitles = resultSet.getString("assignment_titles");
+                    boolean chapterIsComplete = resultSet.getBoolean("chapter_isComplete");
 
                     // Create a ChapterDetail object and add it to the CourseDetail
                     Chapter chapterDetail = new Chapter(
-                            chapterId, chapterName,  quizTitles, "","" ,"","");
+                            chapterId, chapterName,  "", "","" ,quizTitles,assignmentTitles,chapterIsComplete);
                     courseDetail.addChapter(chapterDetail);
 
                     // Debugging: Print chapter details

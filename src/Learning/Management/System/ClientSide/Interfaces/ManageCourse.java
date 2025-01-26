@@ -128,13 +128,14 @@ public class ManageCourse extends JFrame implements ActionListener {
             String chapter = ChapterField.getText().trim();
             String description = DescriptionField.getText().trim();
             String price = PriceField.getText().trim();
+            boolean iscompelete = false;
 
             // Validate inputs
             if (!id.isEmpty()&&!chapter.isEmpty() && !description.isEmpty() && !price.isEmpty()) {
                 // Validate price is a valid decimal
                 if (isValidPrice(price)) {
                     // Create a new Course object
-                    Course newCourse = new Course(id,chapter, description, price);
+                    Course newCourse = new Course(id,chapter, description, price,iscompelete,iscompelete);
 
                     // Add the course to the database
                     if (newCourse.addCourse(id,chapter, description, price)) {

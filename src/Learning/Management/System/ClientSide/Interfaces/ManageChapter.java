@@ -107,11 +107,12 @@ public class ManageChapter extends JFrame implements ActionListener {
             String cid = ChapterNoField.getText().trim();
             String course = ChapterField.getText().trim();
             String description = DescriptionField.getText().trim();
+            boolean iscompelete = false;
 
             // Validate inputs
             if (!id.isEmpty()&&!cid.isEmpty() && !course.isEmpty() && !description.isEmpty()) {
                 // Create a new Chapter object
-                Chapter newChapter = new Chapter(cid,course, description,id,"","","");
+                Chapter newChapter = new Chapter(cid,course, description,id,"","","",iscompelete);
 
                 // Add the chapter to the database
                 if (newChapter.addChapter(cid, course, description,id)) {

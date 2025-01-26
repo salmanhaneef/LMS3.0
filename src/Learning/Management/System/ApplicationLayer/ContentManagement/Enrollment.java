@@ -11,7 +11,8 @@ import java.util.List;
 
 public class Enrollment {
     private String studentId; // Unique identifier for the student
-    private String courseId;   // Unique identifier for the course
+    private String courseId;
+    // Unique identifier for the course
     private DbCon dbCon;       // Database connection instance
 
     public Enrollment(String studentId, String courseId) {
@@ -25,11 +26,12 @@ public class Enrollment {
         // Print the courseId and studentId for debugging purposes
         System.out.println("Enrolling student with ID: " + studentId + " in course with ID: " + courseId);
 
-        String query = "INSERT INTO enrollment (student_id, course_id) VALUES (?, ?)";
+        String query = "INSERT INTO enrollment (student_id, course_id, is_enrollment_done) VALUES (?, ?, ?)";
         try (Connection connection = dbCon.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, studentId);
             preparedStatement.setString(2, courseId);
+            preparedStatement.setBoolean(3, true);
             int affectedRows = preparedStatement.executeUpdate();
             return affectedRows > 0; // Returns true if the enrollment was successful
         } catch (SQLException e) {
@@ -83,7 +85,7 @@ public class Enrollment {
     // Method to view specific student's enrollment in courses
     public static List<Course> viewSpecificStudentEnrollment(String studentId) {
         List<Course> enrolledCourses = new ArrayList<>();
-        String query = "SELECT c.id, c.name, c.description, c.price, e.is_enrollment_done " +
+        String query = "SELECT c.id, c.name, c.description, c.price,c.isComplete, e.is_enrollment_done " +
                 "FROM enrollment e " +
                 "JOIN course c ON e.course_id = c.id " +
                 "WHERE e.student_id = ?";
@@ -101,9 +103,10 @@ public class Enrollment {
                 String description = resultSet.getString("description");
                 String price = resultSet.getString("price");
                 boolean isEnrollmentDone = resultSet.getBoolean("is_enrollment_done"); // Fetch enrollment status
+                boolean isComplete = resultSet.getBoolean("isComplete");
 
                 // Create Course object with enrollment status
-                enrolledCourses.add(new Course(id, name, description, price));
+                enrolledCourses.add(new Course(id, name, description, price,isComplete,isEnrollmentDone));
             }
 
             System.out.println("Courses for student ID " + studentId + ": " + enrolledCourses.size());

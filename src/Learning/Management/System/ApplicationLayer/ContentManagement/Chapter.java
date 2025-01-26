@@ -23,12 +23,13 @@ public class Chapter {
     private String courseName;                    // Associated Course Name
 
     // Constructor
-    public Chapter(String cno, String name, String description, String courseId, String courseName, String quizTitles, String assignmentTitle) {
+    public Chapter(String cno, String name, String description, String courseId, String courseName, String quizTitles, String assignmentTitle,boolean isComplete) {
         this.cno = cno;
         this.name = name;
         this.description = description;
         this.courseId = courseId;
         this.courseName = courseName;
+        this.isComplete = isComplete;
         this.quizTitles = quizTitles;
         this.assignmentTitles = assignmentTitle;
     }
@@ -77,9 +78,10 @@ public class Chapter {
                 String chapterId = resultSet.getString("chapter_id");
                 String chapterName = resultSet.getString("chapter_name");
                 String chapterDescription = resultSet.getString("description");
+                boolean iscompelete = false;
 
                 // Create a new Chapter instance and add it to the list
-                Chapter chapter = new Chapter(chapterId, chapterName, chapterDescription, courseId, courseName,"","");
+                Chapter chapter = new Chapter(chapterId, chapterName, chapterDescription, courseId, courseName,"","",iscompelete);
                 chapterList.add(chapter);
             }
             System.out.println("Chapters retrieved: " + chapterList.size());
